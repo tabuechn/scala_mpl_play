@@ -128,9 +128,23 @@ aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/image
 
 .field-card {
     width: 10% !important;
-    height: 10% !important;
+    height: 100% !important;
+    background-color: #3949AB !important;
 }
 
-.field-card div {
-    background: cornflowerblue !important;
+.gameHeader {
+    height: 10%;
+    margin: 0;
+}
+
+.gameContainer {
+    height: 90%;
+}
+
+.gameContainer .row {
+    height: 10%;
+}
+
+body {
+    height: 100%;
 }

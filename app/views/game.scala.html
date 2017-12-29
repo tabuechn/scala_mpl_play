@@ -3,15 +3,15 @@
 <!DOCTYPE html>
 
 @main("Welcome to the Game") {
-  <h1>Battleship</h1>
+  <h1 class="gameHeader">Battleship</h1>
 
-  <div class="container-fluid">
+  <div class="container-fluid gameContainer">
 
     @for(row <- 1 to rows) {
       <div class="row">
         @for(col <- 1 to cols) {
-          <button class=" field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-          Button
+          <button class="field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+
           </button>
         }
       </div>
