@@ -1,0 +1,32 @@
+@import de.htwg.se.battleship.model.Player
+@import de.htwg.se.battleship.controller.Controller
+@(con: Controller, currentPlayer: Player)
+
+<!DOCTYPE html>
+
+@main("Welcome to the Game") {
+    <div class="gameHeader">
+        <span>set your ships @{currentPlayer.COLOR}</span>
+        <button id="verticalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+            V
+        </button>
+        <button id="horizontalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
+            H
+        </button>
+    </div>
+
+    <div class="container-fluid gameContainer">
+
+    @for(row <- 1 to con.fieldSize) {
+        <div class="row">
+        @for(col <- 1 to con.fieldSize) {
+            <button class="field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+
+          </button>
+        }
+        </div>
+    }
+    </div>
+
+    <script src="@routes.Assets.versioned("javascripts/setShips.js")" type="text/javascript"></script>
+}
