@@ -15,6 +15,14 @@ function start() {
 function setListeners() {
     $("#verticalButton").click(function() {setVertical()});
     $("#horizontalButton").click(function() {setHorizontal()});
+    $(".gameContainer").children(".row").each(function(rowIndex) {
+        var row= $(this);
+        row.children("button").each(function (colIndex) {
+            $(this).click(function() {
+                fieldClick(rowIndex,colIndex)
+            })
+        })
+    });
 }
 
 function setVertical() {
@@ -34,6 +42,8 @@ function resetOrientationButtons() {
     $("#horizontalButton").removeClass("mdl-button--colored")
 }
 
-function fieldClick () {
-    
+function fieldClick (rowIndex, colIndex) {
+    console.log("got click at x:" + colIndex + " y:" + rowIndex);
+    window.location = window.location.origin + "/setShips/" + colIndex +"/" + rowIndex + "/" + orientation
+
 }

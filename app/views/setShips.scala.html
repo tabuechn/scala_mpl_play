@@ -1,6 +1,8 @@
 @import de.htwg.se.battleship.model.Player
 @import de.htwg.se.battleship.controller.Controller
+@import de.htwg.se.battleship.model.Point
 @(con: Controller, currentPlayer: Player)
+
 
 <!DOCTYPE html>
 
@@ -13,6 +15,11 @@
         <button id="horizontalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect">
             H
         </button>
+        <span>XXXXX : @(currentPlayer.shipInventory.get(5))</span>
+        <span>XXXX : @(currentPlayer.shipInventory.get(4))</span>
+        <span>XXX : @(currentPlayer.shipInventory.get(3))</span>
+        <span>XX : @(currentPlayer.shipInventory.get(2))</span>
+        <span>X: @(currentPlayer.shipInventory.get(1))</span>
     </div>
 
     <div class="container-fluid gameContainer">
@@ -20,9 +27,14 @@
     @for(row <- 1 to con.fieldSize) {
         <div class="row">
         @for(col <- 1 to con.fieldSize) {
-            <button class="field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
 
-          </button>
+            <button class="field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+            @if(currentPlayer.field.hasShip(Point(col-1,row-1)) ) {
+                S
+            } else {
+
+            }
+            </button>
         }
         </div>
     }
