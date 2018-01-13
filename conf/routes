@@ -15,3 +15,5 @@ GET     /setShips/:x/:y/:orientationString               controllers.BattleshipC
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
+
+GET     /socket                     controllers.BattleshipController.socket

@@ -1,32 +1,30 @@
 package controllers
 
-import javax.inject.{Inject, Singleton}
+import javax.inject.Inject
+import javax.inject.Singleton
 
+import akka.actor.{ActorRef, ActorSystem, Props}
 import de.htwg.se.battleship.controller.Controller
-import de.htwg.se.battleship.view.{TuiView, View}
+import de.htwg.se.battleship.model.{Message, Orientation, Player, Point}
 import play.api.mvc.{AbstractController, ControllerComponents}
-import play.api.mvc._
-import akka.stream.scaladsl._
-import de.htwg.se.battleship.model.{Field, Orientation, Player, Point}
+import play.api.mvc.WebSocket
+import services.WebSocketActorFactory
+
 
 @Singleton
-class BattleshipController @Inject()(cc: ControllerComponents) extends AbstractController(cc) with View {
+class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
 
-  var controller: Controller = Controller(10, this)
-
-  var currentPlayer: Player = controller.player1
-  var nextPlayer: Player = controller.player2
-
-  def index = Action {
-
-    Ok(views.html.game(controller.fieldSize,controller.fieldSize))
-  }
+  val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
+  val actorSystem = ActorSystem.create(actorSystemName)
+  val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
+  val wui = actorSystem.actorOf(Props(new WUI(controller)))
 
   def start = Action {
-      controller = Controller(10, this)
-      currentPlayer = controller.player1
-      nextPlayer = controller.player2
-      Ok(views.html.setShips(controller,currentPlayer))
+
+      //Ok(views.html.setShips(controller,currentPlayer))
+    controller ! Message.StartGame
+
+    Ok(views.html.game(10,10))
   }
 
   def setShips(x: Int,y:Int, orientationString: String) = Action {
@@ -38,53 +36,13 @@ class BattleshipController @Inject()(cc: ControllerComponents) extends AbstractC
     }
     println("set ship at x:" + x + "y:" + y)
 
+    /*
     val test = controller.placeShip(currentPlayer,Point(x,y),2,orientation)
-    println(test)
-    Ok(views.html.setShips(controller,currentPlayer))
+    println(test) */
+    //Ok(views.html.setShips(controller,currentPlayer))
+    Ok(views.html.game(10,10))
   }
 
-  override def startGame: Unit = {
-    println("starting game")
-  }
+  def socket: WebSocket = webSocketActorFactory.create(controller)
 
-  override def announceWinner(color: String): Unit = {
-    println(color + "won")
-  }
-
-  override def playerSwitch(player: Player): Unit =  {
-    currentPlayer = player
-    if(currentPlayer.COLOR == controller.player1.COLOR) {
-      nextPlayer = controller.player2
-    } else {
-      nextPlayer = controller.player1
-    }
-  }
-
-  override def printField(field: Field, color: String): Unit = {
-    println("printing field")
-  }
-
-  override def shootTurn(): Point =  {
-    println("now shooting")
-    Point(0,0)
-  }
-
-  override def printMessage(message: String): Unit = {
-    println(message)
-  }
-
-  override def selectShip(player: Player): Int = {
-    println("selecting ship of: " + player.COLOR)
-    1
-  }
-
-  override def readPoint(): Point = {
-    println("reading Point")
-    Point(0,0)
-  }
-
-  override def readOrientation(): Int = {
-    println("reading orientation")
-    0
-  }
 }
