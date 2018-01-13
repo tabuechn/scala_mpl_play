@@ -1,9 +1,12 @@
 package controllers
 
 import akka.actor.{Actor, ActorRef, Props}
+import com.fasterxml.jackson.databind.ObjectMapper
 import de.htwg.se.battleship.model.Message._
-import de.htwg.se.battleship.model.{Field, Player}
+import de.htwg.se.battleship.model.{Field, Player, Point}
 import play.api.libs.json._
+
+import scala.collection.mutable
 
 object WebSocketActor {
   def props(webSocketOut: ActorRef, controllerActor: ActorRef) =
@@ -27,20 +30,48 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
   private def getJsonForUpdate(update: Update) : JsValue = {
     Json.obj(
       "activePlayer" -> getJsonForPlayer(update.activePlayer),
-      "otherPlayer" -> getJsonForPlayer(update.otherPlayer)
+      "otherPlayer" -> getJsonForPlayer(update.otherPlayer),
+      "state" -> update.state.toString()
     )
   }
 
   private def getJsonForPlayer(player: Player): JsValue = {
     Json.obj(
       "color" -> player.COLOR,
-      "ships" -> player.shipInventory.toString(),
-      "field" -> player.field.toString()
+      "shipInventory" -> getJsonForShips(player.shipInventory),
+      "field" -> getJsonForField(player.field),
+      "fieldSize" -> player.field.size
     )
   }
 
   private def getJsonForField(field: Field): JsValue = {
-    Json.obj()
-
+    var jsonString = "{"
+    val keys = field.fieldGrid.keys
+    for( x <- 0 to field.size) {
+      for( y <- 0 to field.size) {
+        val pointString = "\"" + x + " " + y + "\""
+        jsonString += pointString + ": " + field.hasShip(Point(x,y)).toString() + ","
+      }
+    }
+    jsonString = jsonString.dropRight(1)
+    jsonString += "}"
+    Json.parse(jsonString)
   }
+
+  private def getJsonForShips(ships: mutable.Map[Int,Int]): JsValue = {
+    val keys = ships.keys
+    var jsonString = "{"
+    for( ship <- keys ) {
+      jsonString += "\"" + ship + "\"" + ": " + show(ships.get(ship)) + ","
+    }
+    jsonString = jsonString.dropRight(1)
+    jsonString += "}"
+    Json.parse(jsonString)
+  }
+
+  def show(x: Option[Int]) = x match {
+    case Some(s) => s
+    case None => 0
+  }
+
 }

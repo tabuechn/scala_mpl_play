@@ -148,3 +148,8 @@ aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/image
 body {
     height: 100%;
 }
+
+.shipSelector {
+    border: 1px solid black;
+    cursor: pointer;
+}
