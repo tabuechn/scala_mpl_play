@@ -17,11 +17,14 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
 
   controller ! RegisterObserver
 
+  var currentPlayer: Player = _
+
   override def receive: Receive = {
     case StartGame() => println("Starting game")
     case PrintMessage(message:String) => println(message)
     case Update(state: Phase, activePlayer: Player, otherPlayer: Player) =>  {
       println(" got update message")
+      currentPlayer = activePlayer
       socketOut ! getJsonForUpdate(Update(state,activePlayer,otherPlayer))
     }
     case _ => println("got unknown message")

@@ -7,7 +7,7 @@ var orientation = "v";
 var shipSize = 1;
 var fieldSize = 10;
 function start() {
-    var socket = new WebSocket("ws://localhost:9000/socket");
+    socket = new WebSocket("ws://localhost:9000/socket");
     socket.onmessage = function (event) {
         var data = event.data;
         var obj = JSON.parse(data);
@@ -20,6 +20,7 @@ function start() {
     };
     socket.onclose = function(event) {
         console.log("socket closed");
+        alert("your socket has been closed!");
     };
     socket.onerror = function(event) {
         console.log("got socket error");
@@ -111,17 +112,24 @@ function drawField(field) {
             var html;
 
             if(hasShip) {
-                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\">S</button>"
+                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>S</button>"
             } else {
-                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\"> </button>"
+                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>" + x + " " + y + "</button>"
             }
             currentRow.innerHTML += html;
             colCounter++;
+        } else {
+
         }
         //console.log(currentRow);
 
 
     }
+}
+
+function buttonClick(x,y) {
+    console.log("got click on x:" + x + " y:" + y);
+    socket.send(JSON.stringify("testMessage"));
 }
 
 function clearField() {

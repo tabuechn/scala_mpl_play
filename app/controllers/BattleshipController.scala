@@ -5,6 +5,7 @@ import javax.inject.Singleton
 
 import akka.actor.{ActorRef, ActorSystem, Props}
 import de.htwg.se.battleship.controller.Controller
+import de.htwg.se.battleship.model.Message.StartGame
 import de.htwg.se.battleship.view.TuiView
 import de.htwg.se.battleship.model.{Message, Orientation, Player, Point}
 import play.api.mvc.{AbstractController, ControllerComponents}
@@ -18,6 +19,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
   val actorSystem = ActorSystem.create(actorSystemName)
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
+  controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
 
   def start = Action {
@@ -27,7 +29,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
     Ok(views.html.game())
   }
 
-  def setShips(x: Int,y:Int, orientationString: String) = Action {
+  def setShips(x: Int,y:Int, shipSize:Int, orientationString: String) = Action {
     var orientation: Orientation = null
     if(orientationString == "v") {
       orientation = Orientation.VERTICAL
@@ -40,7 +42,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
     val test = controller.placeShip(currentPlayer,Point(x,y),2,orientation)
     println(test) */
     //Ok(views.html.setShips(controller,currentPlayer))
-    Ok(views.html.game())
+    Ok("ok!")
   }
 
   def socket: WebSocket = webSocketActorFactory.create(controller)
