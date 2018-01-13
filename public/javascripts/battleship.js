@@ -6,8 +6,10 @@ var socket;
 function start() {
     var socket = new WebSocket("ws://localhost:9000/socket");
     socket.onmessage = function (event) {
+        var data = event.data;
+        var obj = JSON.parse(data);
         console.log("got message:");
-        console.log(event);
+        console.log(obj);
     };
     socket.onopen = function(event) {
         console.log("socket opened");
@@ -17,5 +19,5 @@ function start() {
     };
     socket.onerror = function(event) {
         console.log("got socket error");
-    }
+    };
 }

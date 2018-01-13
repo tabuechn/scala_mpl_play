@@ -17,7 +17,6 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
   val actorSystem = ActorSystem.create(actorSystemName)
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
-  val wui = actorSystem.actorOf(Props(new WUI(controller)))
 
   def start = Action {
 
