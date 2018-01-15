@@ -14,10 +14,10 @@ import services.WebSocketActorFactory
 
 
 @Singleton
-class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
+class BattleshipController @Inject()(implicit actorSystem: ActorSystem, webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
 
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
-  val actorSystem = ActorSystem.create(actorSystemName)
+  //val actorSystem = ActorSystem.create(actorSystemName)
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
   //controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
@@ -25,11 +25,10 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   def start = Action {
 
     //controller ! Message.StartGame
-
     Ok(views.html.game())
   }
 
-  def setShips(x: Int,y:Int, shipSize:Int, orientationString: String) = Action {
+  def setShips(x: Int,y:Int, shipSize:Int, orientationString: String, playerColor: String) = Action {
     var orientation: Orientation = null
     if(orientationString == "v") {
       orientation = Orientation.VERTICAL
@@ -38,11 +37,12 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
     }
     println("set ship at x:" + x + "y:" + y)
 
+    controller ! Message.PlaceShipViaColor(playerColor,Point(x,y),shipSize,orientation)
     /*
     val test = controller.placeShip(currentPlayer,Point(x,y),2,orientation)
     println(test) */
     //Ok(views.html.setShips(controller,currentPlayer))
-    Ok("ok!")
+    Ok
   }
 
   def socket: WebSocket = webSocketActorFactory.create(controller)

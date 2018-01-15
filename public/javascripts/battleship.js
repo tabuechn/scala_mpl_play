@@ -6,6 +6,7 @@ var socket;
 var orientation = "v";
 var shipSize = 1;
 var fieldSize = 10;
+var currentPlayer = {};
 function start() {
     socket = new WebSocket("ws://localhost:9000/socket");
     socket.onmessage = function (event) {
@@ -17,10 +18,11 @@ function start() {
     };
     socket.onopen = function(event) {
         console.log("socket opened");
-        socket.send(JSON.stringify("{\"testMessage\": \"test\" }"));
+        //socket.send(JSON.stringify("{\"testMessage\": \"test\" }"));
     };
     socket.onclose = function(event) {
         console.log("socket closed");
+        console.log(event);
         alert("your socket has been closed!");
     };
     socket.onerror = function(event) {
@@ -65,11 +67,11 @@ function resetOrientationButtons() {
 }
 
 function updateGame(json) {
-    var player = json.activePlayer;
-    setPlayerColor(player.color);
-    setPlayerShips(player.shipInventory);
-    fieldSize = player.fieldSize;
-    drawField(player.field);
+    currentPlayer = json.activePlayer;
+    setPlayerColor(currentPlayer.color);
+    setPlayerShips(currentPlayer.shipInventory);
+    fieldSize = currentPlayer.fieldSize;
+    drawField(currentPlayer.field);
 }
 
 function setPlayerColor(color) {
@@ -77,7 +79,6 @@ function setPlayerColor(color) {
 }
 
 function setPlayerShips(shipsMap) {
-    console.log(shipsMap);
     for(var i = 1; i < 6; i++) {
         var numberForValue = shipsMap[i];
         if(numberForValue === undefined) {numberForValue = 0}
@@ -89,7 +90,6 @@ function drawField(field) {
     var gameContainer = $(".gameContainer");
     gameContainer.empty();
     clearField();
-    console.log(field);
     var currentField = [];
     for(var rows = 0; rows < fieldSize; rows++) {
         currentField.push([]);
@@ -129,6 +129,7 @@ function drawField(field) {
 
 function buttonClick(x,y) {
     console.log("got click on x:" + x + " y:" + y);
+    $.get("/setShips/" + x + "/" + y + "/" + shipSize + "/" + orientation + "/" + currentPlayer.color)
 }
 
 function clearField() {

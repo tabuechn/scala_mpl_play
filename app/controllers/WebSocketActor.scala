@@ -27,7 +27,7 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
       currentPlayer = activePlayer
       socketOut ! getJsonForUpdate(Update(state,activePlayer,otherPlayer))
     }
-    case _ => controller ! StartGame
+    case _ => println("got unknown message");
   }
 
   private def getJsonForUpdate(update: Update) : JsValue = {
