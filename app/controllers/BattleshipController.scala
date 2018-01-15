@@ -14,10 +14,10 @@ import services.WebSocketActorFactory
 
 
 @Singleton
-class BattleshipController @Inject()(implicit actorSystem: ActorSystem, webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
+class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
 
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
-  //val actorSystem = ActorSystem.create(actorSystemName)
+  val actorSystem = ActorSystem.create(actorSystemName)
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
   //controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
@@ -45,6 +45,16 @@ class BattleshipController @Inject()(implicit actorSystem: ActorSystem, webSocke
     Ok
   }
 
-  def socket: WebSocket = webSocketActorFactory.create(controller)
+  def shootShip(x: Int,y: Int, playerColor: String) = Action {
+
+    controller ! Message.HitShipViaColor(playerColor, Point(x,y))
+
+    Ok
+  }
+
+  def socket: WebSocket =  {
+    controller ! StartGame
+    webSocketActorFactory.create(controller)
+  }
 
 }

@@ -67,7 +67,9 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
     for( ship <- keys ) {
       jsonString += "\"" + ship + "\"" + ": " + show(ships.get(ship)) + ","
     }
-    jsonString = jsonString.dropRight(1)
+    if(jsonString.length > 1) {
+      jsonString = jsonString.dropRight(1)
+    }
     jsonString += "}"
     Json.parse(jsonString)
   }

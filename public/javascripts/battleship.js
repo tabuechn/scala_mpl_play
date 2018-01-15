@@ -7,6 +7,8 @@ var orientation = "v";
 var shipSize = 1;
 var fieldSize = 10;
 var currentPlayer = {};
+var otherPlayer = {};
+var state = "init";
 function start() {
     socket = new WebSocket("ws://localhost:9000/socket");
     socket.onmessage = function (event) {
@@ -68,10 +70,17 @@ function resetOrientationButtons() {
 
 function updateGame(json) {
     currentPlayer = json.activePlayer;
+    otherPlayer = json.otherPlayer;
+    state = json.state;
+    setInfoText();
     setPlayerColor(currentPlayer.color);
     setPlayerShips(currentPlayer.shipInventory);
     fieldSize = currentPlayer.fieldSize;
     drawField(currentPlayer.field);
+}
+
+function setInfoText() {
+    $("#statusText").html(state + "&nbsp;")
 }
 
 function setPlayerColor(color) {
@@ -103,33 +112,31 @@ function drawField(field) {
             colCounter = 0;
         }
         var currentRow = gameContainer.children()[rowCounter];
-        // todo: checkt wtf is going on here
-        if(currentRow !== undefined) {
-            var hasShip = field[key];
-            var cords = key.split(" ");
-            var x = cords[0];
-            var y = cords[1];
-            var html;
 
-            if(hasShip) {
-                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>S</button>"
-            } else {
-                html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>" + x + " " + y + "</button>"
-            }
-            currentRow.innerHTML += html;
-            colCounter++;
+        var hasShip = field[key];
+        var cords = key.split(" ");
+        var x = cords[0];
+        var y = cords[1];
+        var html;
+
+        if(hasShip) {
+            html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>S</button>"
         } else {
-            console.log("got undifned stuff");
+            html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'></button>"
         }
-        //console.log(currentRow);
-
-
+        currentRow.innerHTML += html;
+        colCounter++;
     }
 }
 
 function buttonClick(x,y) {
     console.log("got click on x:" + x + " y:" + y);
-    $.get("/setShips/" + x + "/" + y + "/" + shipSize + "/" + orientation + "/" + currentPlayer.color)
+    if(state === "PlaceShipTurn") {
+        $.get("/setShips/" + x + "/" + y + "/" + shipSize + "/" + orientation + "/" + currentPlayer.color)
+    } else if( state === "ShootTurn") {
+        $.get("/shootShip/" + x + "/" + y + "/" + otherPlayer.color)
+    }
+
 }
 
 function clearField() {
