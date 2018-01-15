@@ -135,14 +135,17 @@ aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/image
 .gameHeader {
     height: 10%;
     margin: 0;
+    background-color: lightblue;
 }
 
 .gameContainer {
     height: 90%;
+    background-color: lightblue;
 }
 
 .gameContainer .row {
     height: 10%;
+    background-color: lightblue;
 }
 
 body {
@@ -152,4 +155,5 @@ body {
 .shipSelector {
     border: 1px solid black;
     cursor: pointer;
+    background-color: lightblue;
 }

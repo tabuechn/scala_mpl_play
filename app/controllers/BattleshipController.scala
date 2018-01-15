@@ -19,7 +19,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
   val actorSystem = ActorSystem.create(actorSystemName)
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
-  controller ! StartGame
+  //controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
 
   def start = Action {

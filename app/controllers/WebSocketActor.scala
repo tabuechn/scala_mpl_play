@@ -27,7 +27,7 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
       currentPlayer = activePlayer
       socketOut ! getJsonForUpdate(Update(state,activePlayer,otherPlayer))
     }
-    case _ => println("got unknown message")
+    case _ => controller ! StartGame
   }
 
   private def getJsonForUpdate(update: Update) : JsValue = {
@@ -50,8 +50,8 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
   private def getJsonForField(field: Field): JsValue = {
     var jsonString = "{"
     val keys = field.fieldGrid.keys
-    for( x <- 0 to field.size) {
-      for( y <- 0 to field.size) {
+    for( x <- 0 to field.size - 1) {
+      for( y <- 0 to field.size - 1) {
         val pointString = "\"" + x + " " + y + "\""
         jsonString += pointString + ": " + field.hasShip(Point(x,y)).toString() + ","
       }

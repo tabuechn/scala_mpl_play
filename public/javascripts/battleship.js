@@ -17,6 +17,7 @@ function start() {
     };
     socket.onopen = function(event) {
         console.log("socket opened");
+        socket.send(JSON.stringify("{\"testMessage\": \"test\" }"));
     };
     socket.onclose = function(event) {
         console.log("socket closed");
@@ -38,7 +39,7 @@ function setShipSize(size) {
 function setSelectedShip() {
     for(var i = 1; i < 6; i++) {
         var shipSelector = $("#ships" + i);
-        shipSelector.css('background-color', 'white');
+        shipSelector.css('background-color', 'lightblue');
         shipSelector.css('color', 'black');
     }
     var selectedShipContainer = $("#ships" + shipSize);
@@ -97,10 +98,9 @@ function drawField(field) {
     var rowCounter = 0;
     var colCounter = 0;
     for(var key in field) {
-        if(colCounter == fieldSize) {
+        if(colCounter == (fieldSize)) {
             rowCounter++;
             colCounter = 0;
-            continue;
         }
         var currentRow = gameContainer.children()[rowCounter];
         // todo: checkt wtf is going on here
@@ -119,7 +119,7 @@ function drawField(field) {
             currentRow.innerHTML += html;
             colCounter++;
         } else {
-
+            console.log("got undifned stuff");
         }
         //console.log(currentRow);
 
@@ -129,7 +129,6 @@ function drawField(field) {
 
 function buttonClick(x,y) {
     console.log("got click on x:" + x + " y:" + y);
-    socket.send(JSON.stringify("testMessage"));
 }
 
 function clearField() {
