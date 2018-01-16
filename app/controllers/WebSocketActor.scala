@@ -61,13 +61,20 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
   private def getJsonForField(field: Field): JsValue = {
     var jsonString = "{"
     val keys = field.fieldGrid.keys
+    keys.foreach((point) => {
+       val pointString = "\"" + point.x + " " + point.y + "\""
+      jsonString += pointString + ": " + field.hasShip(point) + ","
+    })
+    /*
     for( x <- 0 to field.size - 1) {
       for( y <- 0 to field.size - 1) {
         val pointString = "\"" + x + " " + y + "\""
         jsonString += pointString + ": " + field.hasShip(Point(x,y)).toString() + ","
       }
+    }*/
+    if(jsonString.length() > 1) {
+      jsonString = jsonString.dropRight(1)
     }
-    jsonString = jsonString.dropRight(1)
     jsonString += "}"
     Json.parse(jsonString)
   }

@@ -86,6 +86,10 @@ function updateGame(json) {
     currentPlayer = json.activePlayer;
     otherPlayer = json.otherPlayer;
     state = json.state;
+    if(state === "AnnounceWinner") {
+        alert(currentPlayer.color + " has won! restarting the game");
+        window.location = "http://localhost:9000/restart"
+    }
     setInfoText();
     setPlayerColor(currentPlayer.color);
     setPlayerShips(currentPlayer.shipInventory);
@@ -115,31 +119,20 @@ function drawField(field) {
     clearField();
     var currentField = [];
     for(var rows = 0; rows < fieldSize; rows++) {
-        currentField.push([]);
-        gameContainer.append("<div class='row'></div>")
+        gameContainer.append("<div class='row'></div>");
+        var row = gameContainer.children()[rows];
+        for(var cols = 0; cols < fieldSize; cols++) {
+            row.innerHTML += "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + (cols+1) + "," + (rows+1) +")'></button>"
+        }
     }
-    var rowCounter = 0;
-    var colCounter = 0;
     for(var key in field) {
-        if(colCounter == (fieldSize)) {
-            rowCounter++;
-            colCounter = 0;
-        }
-        var currentRow = gameContainer.children()[rowCounter];
-
-        var hasShip = field[key];
         var cords = key.split(" ");
-        var x = cords[0];
-        var y = cords[1];
-        var html;
+        var x = cords[0] - 1;
+        var y = cords[1] - 1;
 
-        if(hasShip) {
-            html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'>S</button>"
-        } else {
-            html = "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + x + "," + y +")'></button>"
-        }
-        currentRow.innerHTML += html;
-        colCounter++;
+        var row = gameContainer.children()[y];
+        var child = $(row).children()[x];
+        child.innerHTML = "S";
     }
 }
 

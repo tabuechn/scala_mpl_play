@@ -11,6 +11,8 @@ GET     /message                    controllers.AsyncController.message
 
 GET     /start                       controllers.BattleshipController.start
 
+GET     /restart                       controllers.BattleshipController.restart
+
 GET     /setShips/:x/:y/:shipSize/:orientationString/:playerColor               controllers.BattleshipController.setShips(x:Int,y:Int,shipSize:Int, orientationString:String, playerColor:String)
 
 GET     /shootShip/:x/:y/:playerColor                                           controllers.BattleshipController.shootShip(x:Int,y:Int, playerColor:String)
