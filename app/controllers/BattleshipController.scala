@@ -13,6 +13,8 @@ import play.api.mvc.WebSocket
 import services.WebSocketActorFactory
 
 
+
+
 @Singleton
 class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactory, cc: ControllerComponents) extends AbstractController(cc)  {
 
@@ -21,6 +23,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
   //controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
+
 
   def start = Action {
 

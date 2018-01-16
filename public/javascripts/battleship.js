@@ -13,25 +13,39 @@ function start() {
     socket = new WebSocket("ws://localhost:9000/socket");
     socket.onmessage = function (event) {
         var data = event.data;
-        var obj = JSON.parse(data);
-        console.log("got message:");
-        console.log(obj);
-        updateGame(obj);
+        var json = JSON.parse(data);
+        console.log(json);
+        messageHandler(json);
     };
     socket.onopen = function(event) {
         console.log("socket opened");
-        //socket.send(JSON.stringify("{\"testMessage\": \"test\" }"));
     };
     socket.onclose = function(event) {
         console.log("socket closed");
-        console.log(event);
-        alert("your socket has been closed!");
+        start()
     };
     socket.onerror = function(event) {
         console.log("got socket error");
     };
     setSelectedShip();
     setVertical();
+}
+
+function messageHandler(json) {
+    switch (json.type) {
+        case "update":
+            updateGame(json);
+            break;
+        case "message":
+            onMessageRecive(json);
+            break;
+        default:
+            console.log("got unknown message");
+    }
+}
+
+function onMessageRecive(json) {
+    alert(json.message);
 }
 
 function setShipSize(size) {

@@ -21,7 +21,10 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
 
   override def receive: Receive = {
     case StartGame() => println("Starting game")
-    case PrintMessage(message:String) => println(message)
+    case PrintMessage(message:String) =>  {
+      println(message)
+      socketOut ! createMessageJson(message)
+    }
     case Update(state: Phase, activePlayer: Player, otherPlayer: Player) =>  {
       println(" got update message")
       currentPlayer = activePlayer
@@ -30,8 +33,16 @@ class WebSocketActor(socketOut: ActorRef, controller: ActorRef) extends Actor{
     case _ => println("got unknown message");
   }
 
+  private def createMessageJson(message:String): JsValue = {
+    Json.obj(
+      "type" -> "message",
+      "message" -> message
+    )
+  }
+
   private def getJsonForUpdate(update: Update) : JsValue = {
     Json.obj(
+      "type" -> "update",
       "activePlayer" -> getJsonForPlayer(update.activePlayer),
       "otherPlayer" -> getJsonForPlayer(update.otherPlayer),
       "state" -> update.state.toString()
