@@ -11,7 +11,7 @@ import de.htwg.se.battleship.model.{Message, Orientation, Player, Point}
 import play.api.mvc.{AbstractController, ControllerComponents}
 import play.api.mvc.WebSocket
 import services.WebSocketActorFactory
-
+import de.htwg.se.battleship.model._
 
 
 
@@ -20,7 +20,9 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
 
   val (fieldSize, actorSystemName, controllerActorName) = (10,"battleship","controller")
   val actorSystem = ActorSystem.create(actorSystemName)
-  val controller = actorSystem.actorOf(Controller.props(fieldSize), controllerActorName)
+  //1x5Felder, 2x4Felder, 3x3Felder, 4x2Felder //Size -> Amount
+  val shipInventory: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map(/*5 -> 1, 4 -> 2, 3 -> 3*/ 2 -> 1)
+  val controller = actorSystem.actorOf(Controller.props(fieldSize, shipInventory), controllerActorName)
   //controller ! StartGame
   val tui = actorSystem.actorOf(Props(new TuiView(controller)))
 
@@ -34,9 +36,9 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   def setShips(x: Int,y:Int, shipSize:Int, orientationString: String, playerColor: String) = Action {
     var orientation: Orientation = null
     if(orientationString == "v") {
-      orientation = Orientation.VERTICAL
+      orientation = VERTICAL
     } else {
-      orientation = Orientation.HORIZONTAL
+      orientation = HORIZONTAL
     }
     println("set ship at x:" + x + "y:" + y)
 
