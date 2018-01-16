@@ -24,7 +24,7 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   val shipInventory: scala.collection.mutable.Map[Int, Int] = scala.collection.mutable.Map(/*5 -> 1, 4 -> 2, 3 -> 3*/ 2 -> 1)
   var controller = actorSystem.actorOf(Controller.props(fieldSize, shipInventory), controllerActorName)
   var tui = actorSystem.actorOf(Props(new TuiView(controller)))
-  //val gui = actorSystem.actorOf(Props(new GuiView(controller)))
+  var gui = actorSystem.actorOf(Props(new GuiView(controller)))
 
   def start = Action {
 
@@ -35,8 +35,10 @@ class BattleshipController @Inject()(webSocketActorFactory: WebSocketActorFactor
   def restart = Action {
     actorSystem.stop(controller)
     actorSystem.stop(tui)
+    actorSystem.stop(gui)
     controller = actorSystem.actorOf(Controller.props(fieldSize,shipInventory))
     tui = actorSystem.actorOf(Props(new TuiView(controller)))
+    gui = actorSystem.actorOf(Props(new GuiView(controller)))
     Ok(views.html.game())
   }
 
