@@ -3,18 +3,30 @@
 
 @main("Welcome to the Game") {
   <div class="gameHeader">
-    <span id="statusText">init...</span><span id="playerColor"></span>
-    <button id="verticalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onclick="setVertical()">
-      V
-    </button>
-    <button id="horizontalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onclick="setHorizontal()">
-      H
-    </button>
-    <span id="ships5" class="shipSelector" onclick="setShipSize(5)">5 : </span>
-    <span id="ships4" class="shipSelector" onclick="setShipSize(4)">4 : </span>
-    <span id="ships3" class="shipSelector" onclick="setShipSize(3)">3 : </span>
-    <span id="ships2" class="shipSelector" onclick="setShipSize(2)">2 : </span>
-    <span id="ships1" class="shipSelector" onclick="setShipSize(1)">1 : </span>
+    <div class="leftHeader">
+      <div class="outer-box">
+        <div class="inner-box">
+          <span id="statusText">init...</span><span id="playerColor"></span>
+        </div>
+      </div>
+    </div>
+    <div class="rightHeader">
+      <div class="outer-box">
+        <div class="inner-box">
+          <button id="verticalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onclick="setVertical()">
+            V
+          </button>
+          <button id="horizontalButton" class="mdl-button mdl-js-button mdl-button--fab mdl-js-ripple-effect" onclick="setHorizontal()">
+            H
+          </button>
+          <span id="ships5" class="shipSelector" onclick="setShipSize(5)">5 : </span>
+          <span id="ships4" class="shipSelector" onclick="setShipSize(4)">4 : </span>
+          <span id="ships3" class="shipSelector" onclick="setShipSize(3)">3 : </span>
+          <span id="ships2" class="shipSelector" onclick="setShipSize(2)">2 : </span>
+          <span id="ships1" class="shipSelector" onclick="setShipSize(1)">1 : </span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="container-fluid gameContainer">

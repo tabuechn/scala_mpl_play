@@ -127,8 +127,8 @@ dd.error{color:#c00;}
 aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/images/external.png);vertical-align:middle;margin-left:5px;}
 
 .field-card {
-    width: 10% !important;
-    height: 100% !important;
+    /*width: 10% !important;
+    height: 100% !important; */
     background-color: #3949AB !important;
 }
 
@@ -144,9 +144,12 @@ aside a[href^="http"]:after,.doc a[href^="http"]:after{content:url(/assets/image
 }
 
 .gameContainer .row {
-    height: 10%;
+    /*height: 10%; */
     background-color: lightblue;
 }
+
+.outer-box { display: table; width:100%; height: 100%}
+.inner-box { display: table-cell; vertical-align: middle; }
 
 body {
     height: 100%;
@@ -156,4 +159,14 @@ body {
     border: 1px solid black;
     cursor: pointer;
     background-color: lightblue;
+}
+
+.rightHeader {
+    float: right;
+    height: 100%;
+}
+
+.leftHeader {
+    float: left;
+    height: 100%;
 }

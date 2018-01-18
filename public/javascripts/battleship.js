@@ -61,7 +61,7 @@ function setSelectedShip() {
         shipSelector.css('color', 'black');
     }
     var selectedShipContainer = $("#ships" + shipSize);
-    selectedShipContainer.css('background-color', 'red');
+    selectedShipContainer.css('background-color', '#ff4081');
     selectedShipContainer.css('color', 'white');
 }
 
@@ -95,6 +95,15 @@ function updateGame(json) {
     setPlayerShips(currentPlayer.shipInventory);
     fieldSize = currentPlayer.fieldSize;
     drawField(currentPlayer.field);
+    updateMenu();
+}
+
+function updateMenu() {
+    if(state === "PlaceShipTurn") {
+        $(".rightHeader").show()
+    } else if( state === "ShootTurn") {
+        $(".rightHeader").hide()
+    }
 }
 
 function setInfoText() {
@@ -117,12 +126,13 @@ function drawField(field) {
     var gameContainer = $(".gameContainer");
     gameContainer.empty();
     clearField();
+    var itemSize = 100 / fieldSize;
     var currentField = [];
     for(var rows = 0; rows < fieldSize; rows++) {
-        gameContainer.append("<div class='row'></div>");
+        gameContainer.append("<div style='height:" + itemSize +"%;' class='row'></div>");
         var row = gameContainer.children()[rows];
         for(var cols = 0; cols < fieldSize; cols++) {
-            row.innerHTML += "<button class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + (cols+1) + "," + (rows+1) +")'></button>"
+            row.innerHTML += "<button style='height:100%; width: "+ itemSize +"%' class=\"field-card mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent\" onclick='buttonClick(" + (cols+1) + "," + (rows+1) +")'></button>"
         }
     }
     for(var key in field) {
